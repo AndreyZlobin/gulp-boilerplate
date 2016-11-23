@@ -2,3 +2,7 @@
 bower_components
 node_modules
 .idea
+web/css
+web/fonts
+web/js
+web/index.html
