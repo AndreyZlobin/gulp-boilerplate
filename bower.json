@@ -1,0 +1,14 @@
+{
+  "name": "project",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "v4.0.0-alpha.5",
+    "font-awesome": "^4.7.0"
+  }
+}
