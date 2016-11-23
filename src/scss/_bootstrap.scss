@@ -1,48 +1,48 @@
-@import "../../bower_components/bootstrap/scss/variables";
+@import "variables";
 
 // Core variables and mixins
-@import "../../bower_components/bootstrap/scss/mixins";
+@import "mixins";
 
 // Reset and dependencies
-@import "../../bower_components/bootstrap/scss/normalize";
-@import "../../bower_components/bootstrap/scss/print";
+@import "normalize";
+@import "print";
 
 // Core CSS
-@import "../../bower_components/bootstrap/scss/reboot";
-@import "../../bower_components/bootstrap/scss/type";
-@import "../../bower_components/bootstrap/scss/images";
-@import "../../bower_components/bootstrap/scss/code";
-@import "../../bower_components/bootstrap/scss/grid";
-@import "../../bower_components/bootstrap/scss/tables";
-@import "../../bower_components/bootstrap/scss/forms";
-@import "../../bower_components/bootstrap/scss/buttons";
+@import "reboot";
+@import "type";
+@import "images";
+@import "code";
+@import "grid";
+@import "tables";
+@import "forms";
+@import "buttons";
 
 // Components
-@import "../../bower_components/bootstrap/scss/animation";
-@import "../../bower_components/bootstrap/scss/dropdown";
-@import "../../bower_components/bootstrap/scss/button-group";
-@import "../../bower_components/bootstrap/scss/input-group";
-@import "../../bower_components/bootstrap/scss/custom-forms";
-@import "../../bower_components/bootstrap/scss/nav";
-@import "../../bower_components/bootstrap/scss/navbar";
-@import "../../bower_components/bootstrap/scss/card";
-@import "../../bower_components/bootstrap/scss/breadcrumb";
-@import "../../bower_components/bootstrap/scss/pagination";
-@import "../../bower_components/bootstrap/scss/tags";
-@import "../../bower_components/bootstrap/scss/jumbotron";
-@import "../../bower_components/bootstrap/scss/alert";
-@import "../../bower_components/bootstrap/scss/progress";
-@import "../../bower_components/bootstrap/scss/media";
-@import "../../bower_components/bootstrap/scss/list-group";
-@import "../../bower_components/bootstrap/scss/responsive-embed";
-@import "../../bower_components/bootstrap/scss/close";
+@import "animation";
+@import "dropdown";
+@import "button-group";
+@import "input-group";
+@import "custom-forms";
+@import "nav";
+@import "navbar";
+@import "card";
+@import "breadcrumb";
+@import "pagination";
+@import "tags";
+@import "jumbotron";
+@import "alert";
+@import "progress";
+@import "media";
+@import "list-group";
+@import "responsive-embed";
+@import "close";
 
 // Components w/ JavaScript
-@import "../../bower_components/bootstrap/scss/modal";
-@import "../../bower_components/bootstrap/scss/tooltip";
-@import "../../bower_components/bootstrap/scss/popover";
-@import "../../bower_components/bootstrap/scss/carousel";
+@import "modal";
+@import "tooltip";
+@import "popover";
+@import "carousel";
 
 // Utility classes
-@import "../../bower_components/bootstrap/scss/utilities";
+@import "utilities";
 

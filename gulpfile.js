@@ -24,7 +24,12 @@ app.addStyle = function(paths, outputFilename) {
             this.emit('end');
         }))
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init()))
-        .pipe(plugins.sass())
+        .pipe(plugins.sass({
+            includePaths: [
+                config.bowerDir+'/bootstrap/scss',
+                config.bowerDir+'/font-awesome/scss'
+            ]
+        }))
         .pipe(plugins.autoprefixer({
             browsers: ['last 2 versions'],
             cascade: false
