@@ -3,6 +3,11 @@ var plugins = require('gulp-load-plugins')();
 var del = require('del');
 var Q = require('q');
 
+
+var fs = require("fs");
+var browserify = require('browserify');
+var vueify = require('vueify');
+
 var config = {
     assetsDir: 'src',
     sassPattern: 'scss/**/*.scss',
@@ -12,7 +17,15 @@ var config = {
     sourceMaps: !plugins.util.env.production,
     //https://knpuniversity.com/screencast/gulp/version-cache-busting
     revManifestPath: 'rev-manifest.json',
-    useManifest: false
+    useManifest: false,
+
+};
+
+var sassOpts = {
+    includePaths: [
+        config.bowerDir+'/bootstrap/scss',
+        config.bowerDir+'/font-awesome/scss'
+    ]
 };
 
 var app = {};
@@ -24,12 +37,7 @@ app.addStyle = function(paths, outputFilename) {
             this.emit('end');
         }))
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init()))
-        .pipe(plugins.sass({
-            includePaths: [
-                config.bowerDir+'/bootstrap/scss',
-                config.bowerDir+'/font-awesome/scss'
-            ]
-        }))
+        .pipe(plugins.sass(sassOpts))
         .pipe(plugins.autoprefixer({
             browsers: ['last 2 versions'],
             cascade: false
@@ -113,7 +121,7 @@ gulp.task('scripts', function() {
         config.bowerDir+'/jquery/dist/jquery.js',
         config.bowerDir+'/tether/dist/js/tether.js',
         config.bowerDir+'/bootstrap/dist/js/bootstrap.js',
-        config.assetsDir+'js/app.js'
+        config.assetsDir+'/js/app.js',
     ], 'app.js');
 
     return pipeline.run(app.addScript);
@@ -124,6 +132,22 @@ gulp.task('fonts', function() {
         config.bowerDir+'/font-awesome/fonts/*',
         'web/fonts'
     );
+});
+
+gulp.task('vue', function() {
+
+    if(config.production)
+        process.env.NODE_ENV='production';
+
+    return browserify(config.assetsDir+'/js/main.js')
+        .transform(vueify, {
+            sass: sassOpts
+        })
+        .plugin('vueify/plugins/extract-css', {
+            out: 'web/css/bundle.css'
+        })
+        .bundle()
+        .pipe(fs.createWriteStream('web/js/bundle.js'));
 });
 
 gulp.task('watch', function() {
@@ -140,4 +164,5 @@ gulp.task('clean', function() {
     del.sync('web/fonts/*');
 });
 
-gulp.task('default', ['clean', 'styles', 'scripts', 'fonts', 'watch']);
+gulp.task('build', ['clean', 'vue', 'styles', 'scripts', 'fonts']);
+gulp.task('default', ['build', 'watch']);
