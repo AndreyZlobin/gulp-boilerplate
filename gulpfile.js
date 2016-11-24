@@ -140,18 +140,22 @@ gulp.task('vue', function() {
     if(config.production)
         process.env.NODE_ENV='production';
 
-    return browserify(config.assetsDir+'/js/main.js')
-        .transform(vueify, {
-            sass: sassOpts
-        })
-        .plugin('vueify/plugins/extract-css', {
-            out: 'web/css/bundle.css'
-        })
-        .bundle()
-        .pipe(source('web/js/bundle.js'))
+    var b = browserify({
+        entries: config.assetsDir+'/js/main.js',
+        debug: !config.production
+    });
+
+    b.plugin('vueify/plugins/extract-css', {out: 'web/css/bundle.css'});
+    b.transform(vueify, {sass: sassOpts});
+
+    return b.bundle()
+        .pipe(source('bundle.js'))
         .pipe(buffer())
+        .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init({loadMaps: true})))
         .pipe(config.production ? plugins.uglify() : plugins.util.noop())
-        .pipe(gulp.dest('.'));
+        .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.write('.')))
+        .pipe(gulp.dest('web/js/'));
+
 });
 
 gulp.task('watch', function() {
