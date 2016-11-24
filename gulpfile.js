@@ -4,9 +4,10 @@ var del = require('del');
 var Q = require('q');
 
 
-var fs = require("fs");
 var browserify = require('browserify');
 var vueify = require('vueify');
+var buffer = require('vinyl-buffer');
+var source = require('vinyl-source-stream');
 
 var config = {
     assetsDir: 'src',
@@ -147,7 +148,10 @@ gulp.task('vue', function() {
             out: 'web/css/bundle.css'
         })
         .bundle()
-        .pipe(fs.createWriteStream('web/js/bundle.js'));
+        .pipe(source('web/js/bundle.js'))
+        .pipe(buffer())
+        .pipe(config.production ? plugins.uglify() : plugins.util.noop())
+        .pipe(gulp.dest('.'));
 });
 
 gulp.task('watch', function() {
