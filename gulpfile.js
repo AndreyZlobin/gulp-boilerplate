@@ -19,13 +19,13 @@ var config = {
     sourceMaps: !plugins.util.env.production,
     //https://knpuniversity.com/screencast/gulp/version-cache-busting
     revManifestPath: 'rev-manifest.json',
-    useManifest: false,
+    useManifest: false
 
 };
 
 var sassOpts = {
     includePaths: [
-        config.bowerDir+'/bootstrap/scss',
+        config.bowerDir+'/bootstrap-sass/assets/stylesheets',
         config.bowerDir+'/font-awesome/scss'
     ]
 };
@@ -94,8 +94,7 @@ gulp.task('scripts', function() {
 
     return app.addScript([
         config.bowerDir+'/jquery/dist/jquery.js',
-        config.bowerDir+'/tether/dist/js/tether.js',
-        config.bowerDir+'/bootstrap/dist/js/bootstrap.js',
+        config.bowerDir+'/bootstrap-sass/assets/javascripts/bootstrap.js',
         config.assetsDir+'/js/app.js',
 
         //vueapp
