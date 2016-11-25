@@ -12,7 +12,7 @@ var config = {
     assetsDir: 'src',
     sassPattern: 'scss/**/*.scss',
     jsPattern: 'js/**/*.js',
-    vuePattern: 'js/**/*.vue',
+    vuePattern: 'vue/**/*.vue',
     bowerDir: 'bower_components',
     production: !!plugins.util.env.production,
     sourceMaps: !plugins.util.env.production,
@@ -114,7 +114,7 @@ gulp.task('fonts', function() {
 gulp.task('vue', function() {
 
     var b = browserify({
-        entries: config.assetsDir+'/js/main.js',
+        entries: config.assetsDir+'/vue/main.js',
         debug: !config.production
     });
 
@@ -137,6 +137,7 @@ gulp.task('watch-vue', function() {
     gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
     gulp.watch(config.assetsDir+'/'+config.jsPattern, ['scripts']);
     gulp.watch(config.assetsDir+'/'+config.vuePattern, ['build-vue-for-watch']);
+    gulp.watch(config.assetsDir+'/vue/main.js', ['build-vue-for-watch']);
 });
 
 gulp.task('clean', function() {
