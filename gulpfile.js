@@ -1,18 +1,18 @@
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var del = require('del');
-var Q = require('q');
-
 
 var browserify = require('browserify');
 var vueify = require('vueify');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
+var runSequence = require('run-sequence');
 
 var config = {
     assetsDir: 'src',
     sassPattern: 'scss/**/*.scss',
     jsPattern: 'js/**/*.js',
+    vuePattern: 'js/**/*.vue',
     bowerDir: 'bower_components',
     production: !!plugins.util.env.production,
     sourceMaps: !plugins.util.env.production,
@@ -44,7 +44,7 @@ app.addStyle = function(paths, outputFilename) {
             cascade: false
         }))
         .pipe(plugins.concat('css/'+outputFilename))
-        .pipe(config.production ? plugins.minifyCss() : plugins.util.noop())
+        .pipe(config.production ? plugins.cleanCss() : plugins.util.noop())
         .pipe(plugins.if(config.useManifest, plugins.rev()))
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.write('.')))
         .pipe(gulp.dest('web'))
@@ -77,55 +77,31 @@ app.copy = function(srcFiles, outputDir) {
         .pipe(gulp.dest(outputDir));
 };
 
-var Pipeline = function() {
-    this.entries = [];
-};
-Pipeline.prototype.add = function() {
-    this.entries.push(arguments);
-};
-Pipeline.prototype.run = function(callable) {
-    var deferred = Q.defer();
-    var i = 0;
-    var entries = this.entries;
-    var runNextEntry = function() {
-        // see if we're all done looping
-        if (typeof entries[i] === 'undefined') {
-            deferred.resolve();
-            return;
-        }
-        // pass app as this, though we should avoid using "this"
-        // in those functions anyways
-        callable.apply(app, entries[i]).on('end', function() {
-            i++;
-            runNextEntry();
-        });
-    };
-    runNextEntry();
-    return deferred.promise;
-};
-
-
 gulp.task('styles', function () {
-    var pipeline = new Pipeline();
 
-    pipeline.add([
-        config.assetsDir+'/scss/app.scss'
+    return app.addStyle([
+        config.assetsDir+'/scss/app.scss',
+
+        //vueapp
+        'web/css/bundle.css'
+
     ], 'app.css');
 
-    return pipeline.run(app.addStyle);
 });
 
 gulp.task('scripts', function() {
-    var pipeline = new Pipeline();
 
-    pipeline.add([
+    return app.addScript([
         config.bowerDir+'/jquery/dist/jquery.js',
         config.bowerDir+'/tether/dist/js/tether.js',
         config.bowerDir+'/bootstrap/dist/js/bootstrap.js',
         config.assetsDir+'/js/app.js',
+
+        //vueapp
+        'web/js/bundle.js'
+
     ], 'app.js');
 
-    return pipeline.run(app.addScript);
 });
 
 gulp.task('fonts', function() {
@@ -136,9 +112,6 @@ gulp.task('fonts', function() {
 });
 
 gulp.task('vue', function() {
-
-    if(config.production)
-        process.env.NODE_ENV='production';
 
     var b = browserify({
         entries: config.assetsDir+'/js/main.js',
@@ -151,9 +124,6 @@ gulp.task('vue', function() {
     return b.bundle()
         .pipe(source('bundle.js'))
         .pipe(buffer())
-        .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init({loadMaps: true})))
-        .pipe(config.production ? plugins.uglify() : plugins.util.noop())
-        .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.write('.')))
         .pipe(gulp.dest('web/js/'));
 
 });
@@ -161,6 +131,12 @@ gulp.task('vue', function() {
 gulp.task('watch', function() {
     gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
     gulp.watch(config.assetsDir+'/'+config.jsPattern, ['scripts']);
+});
+
+gulp.task('watch-vue', function() {
+    gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
+    gulp.watch(config.assetsDir+'/'+config.jsPattern, ['scripts']);
+    gulp.watch(config.assetsDir+'/'+config.vuePattern, ['build-vue-for-watch']);
 });
 
 gulp.task('clean', function() {
@@ -172,5 +148,20 @@ gulp.task('clean', function() {
     del.sync('web/fonts/*');
 });
 
-gulp.task('build', ['clean', 'vue', 'styles', 'scripts', 'fonts']);
+
+gulp.task('clean-vue', function() {
+    del.sync('web/css/bundle.css');
+    del.sync('web/js/bundle.js');
+});
+
+gulp.task('build-vue', function(callback) {
+    runSequence('clean', 'vue', ['styles', 'scripts'], ['clean-vue', 'fonts'] , callback);
+});
+
+gulp.task('build-vue-for-watch', function(callback) {
+    runSequence('vue', ['styles', 'scripts'], callback);
+});
+
+gulp.task('build', ['clean', 'styles', 'scripts', 'fonts']);
 gulp.task('default', ['build', 'watch']);
+gulp.task('default-vue', ['build-vue', 'watch-vue']);
