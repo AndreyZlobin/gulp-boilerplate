@@ -1,7 +1,7 @@
-<style>
-
+<style lang="scss">
+    $red: red;
     .red {
-        color: #f00;
+        color: $red;
     }
 </style>
 
