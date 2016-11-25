@@ -4,6 +4,7 @@ var del = require('del');
 
 var browserify = require('browserify');
 var vueify = require('vueify');
+var babelify = require('babelify');
 var buffer = require('vinyl-buffer');
 var source = require('vinyl-source-stream');
 var runSequence = require('run-sequence');
@@ -120,6 +121,7 @@ gulp.task('vue', function() {
 
     b.plugin('vueify/plugins/extract-css', {out: 'web/css/bundle.css'});
     b.transform(vueify, {sass: sassOpts});
+    b.transform(babelify);
 
     return b.bundle()
         .pipe(source('bundle.js'))
