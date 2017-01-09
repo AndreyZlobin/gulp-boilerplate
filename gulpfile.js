@@ -11,6 +11,7 @@ var runSequence = require('run-sequence');
 
 var config = {
     assetsDir: 'src',
+    cssPattern: '/css/**/*.css',
     sassPattern: 'scss/**/*.scss',
     jsPattern: 'js/**/*.js',
     vuePattern: 'vue/**/*.vue',
@@ -131,6 +132,7 @@ gulp.task('vue', function() {
 
 gulp.task('watch', function() {
     gulp.watch(config.assetsDir+'/'+config.sassPattern, ['styles']);
+    gulp.watch(config.assetsDir+'/'+config.cssPattern, ['styles']);
     gulp.watch(config.assetsDir+'/'+config.jsPattern, ['scripts']);
 });
 
