@@ -112,6 +112,13 @@ gulp.task('fonts', function() {
     );
 });
 
+gulp.task('img', function() {
+    return app.copy(
+        config.assetsDir+'/img/*',
+        'web/img'
+    );
+});
+
 gulp.task('vue', function() {
 
     var b = browserify({
@@ -150,6 +157,7 @@ gulp.task('clean', function() {
     del.sync('web/css/*');
     del.sync('web/js/*');
     del.sync('web/fonts/*');
+    del.sync('web/img/*');
 });
 
 
@@ -159,13 +167,13 @@ gulp.task('clean-vue', function() {
 });
 
 gulp.task('build-vue', function(callback) {
-    runSequence('clean', 'vue', ['styles', 'scripts'], ['clean-vue', 'fonts'] , callback);
+    runSequence('clean', 'vue', ['styles', 'scripts'], ['clean-vue', 'fonts', 'img'] , callback);
 });
 
 gulp.task('build-vue-for-watch', function(callback) {
     runSequence('vue', ['styles', 'scripts'], callback);
 });
 
-gulp.task('build', ['clean', 'styles', 'scripts', 'fonts']);
+gulp.task('build', ['clean', 'styles', 'scripts', 'fonts', 'img']);
 gulp.task('default', ['build', 'watch']);
 gulp.task('default-vue', ['build-vue', 'watch-vue']);
